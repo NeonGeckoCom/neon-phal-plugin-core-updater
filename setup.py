@@ -76,6 +76,7 @@ setup(
     long_description_content_type="text/markdown",
     install_requires=get_requirements('requirements.txt'),
     packages=find_packages(),
+    package_data={'neon_phal__plugin_core_updater': ['update_scripts/*']},
     include_package_data=True,
     entry_points={'ovos.plugin.phal.admin': PLUGIN_ENTRY_POINT}
 )

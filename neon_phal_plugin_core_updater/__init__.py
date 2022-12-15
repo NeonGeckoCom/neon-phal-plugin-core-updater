@@ -25,9 +25,11 @@
 # LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-from typing import Optional
 
 import requests
+
+from os.path import dirname
+from subprocess import run
 from mycroft_bus_client import Message
 from ovos_utils.log import LOG
 from ovos_plugin_manager.phal import PHALPlugin
@@ -37,9 +39,11 @@ class CoreUpdater(PHALPlugin):
     def __init__(self, bus=None, name="neon-phal-plugin-core-updater",
                  config=None):
         PHALPlugin.__init__(self, bus, name, config)
+        self.update_command = self.config.get("update_command") or \
+            f"{dirname(__file__)}/update_scripts/neon_os_2022_12.sh"
         self.core_package = self.config.get("core_module") or "neon_core"
         self.github_ref = self.config.get("github_ref") or \
-                          "NeonGeckoCom/NeonCore"
+            "NeonGeckoCom/NeonCore"
         self.pypi_ref = self.config.get("pypi_ref")
         self.blacklist = self.config.get('blacklist') or list()
         self.bus.on("neon.core_updater.check_update", self.check_core_updates)
@@ -81,5 +85,13 @@ class CoreUpdater(PHALPlugin):
         else:
             LOG.error("No remote reference to check for updates")
 
-    def start_core_updates(self):
-        pass
+    def start_core_updates(self, message):
+        """
+        Start a core update. Note that the update process may kill this thread.
+        """
+        version = message.data.get("version")
+        LOG.info(f"Starting Core Update to version: {version}")
+        command = f"{self.update_command} {version}" if version else \
+            self.update_command
+        LOG.debug(command)
+        run(command, shell=True, start_new_session=True)
