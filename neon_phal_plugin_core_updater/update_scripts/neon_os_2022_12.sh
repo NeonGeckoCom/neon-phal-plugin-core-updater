@@ -13,6 +13,7 @@ backup_venv() {
   echo "Backing up venv"
   cp -r "${venv_path}" "${backup_path}"
   chown -R neon:neon /home/neon
+  echo "venv backup complete"
 }
 
 remove_backup() {
@@ -33,7 +34,8 @@ restore_backup() {
 do_python_update() {
   . "${venv_path}/bin/activate"
   mkdir -p "${update_log_path}"
-  pip install --upgrade --report "${pip_spec}" > "${update_log_path}/pip_report.json"
+  pip install --upgrade pip
+  pip install --report --upgrade "${pip_spec}" > "${update_log_path}/pip_report.json"
   deactivate
   chown -R neon:neon /home/neon
 }
@@ -53,7 +55,8 @@ validate_module_load() {
 }
 
 remove_backup
+systemctl stop neon
 backup_venv || exit 2
-do_python_update || restore_backup; exit 2
+do_python_update || echo "Update Failed"
 validate_module_load
-systemctl restart neon
+systemctl start neon
