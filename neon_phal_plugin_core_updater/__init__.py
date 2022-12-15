@@ -39,13 +39,13 @@ class CoreUpdater(PHALPlugin):
     def __init__(self, bus=None, name="neon-phal-plugin-core-updater",
                  config=None):
         PHALPlugin.__init__(self, bus, name, config)
-        self.update_command = self.config.get("update_command") or \
-            f"{dirname(__file__)}/update_scripts/neon_os_2022_12.sh"
+        self.update_command = self.config.get("update_command",
+                                              f"{dirname(__file__)}/"
+                                              f"update_scripts/"
+                                              f"neon_os_2022_12.sh")
         self.core_package = self.config.get("core_module") or "neon_core"
-        self.github_ref = self.config.get("github_ref") or \
-            "NeonGeckoCom/NeonCore"
+        self.github_ref = self.config.get("github_ref", "NeonGeckoCom/NeonCore")
         self.pypi_ref = self.config.get("pypi_ref")
-        self.blacklist = self.config.get('blacklist') or list()
         self.bus.on("neon.core_updater.check_update", self.check_core_updates)
         self.bus.on("neon.core_updater.start_update", self.start_core_updates)
         self._installed_version = self._get_installed_core_version()
@@ -62,13 +62,13 @@ class CoreUpdater(PHALPlugin):
         Check for a new core version and reply
         """
         update_alpha = 'a' in self._installed_version
+        new_version = None
         if self.pypi_ref:
             # TODO: Implement PyPI version check
             pass
         elif self.github_ref:
             url = f'https://api.github.com/repos/{self.github_ref}/releases'
             releases = requests.get(url).json()
-            new_version = None
             for release in releases:
                 if release.get("prerelease") and not update_alpha:
                     continue
@@ -77,11 +77,13 @@ class CoreUpdater(PHALPlugin):
                 else:
                     new_version = release.get("name")
 
-            if new_version:
-                LOG.info(f"Found newer release: {new_version}")
-            if message:
-                self.bus.emit(message.response({"new_version": new_version,
-                                                "github_ref": self.github_ref}))
+        if new_version:
+            LOG.info(f"Found newer release: {new_version}")
+        if message:
+            self.bus.emit(message.response({"new_version": new_version,
+                                            "installed_version": self._installed_version,
+                                            "github_ref": self.github_ref,
+                                            "pypi_ref": self.pypi_ref}))
         else:
             LOG.error("No remote reference to check for updates")
 
