@@ -77,5 +77,5 @@ setup(
     install_requires=get_requirements('requirements.txt'),
     packages=find_packages(),
     include_package_data=True,
-    entry_points={'ovos.plugin.phal': PLUGIN_ENTRY_POINT}
+    entry_points={'ovos.plugin.phal.admin': PLUGIN_ENTRY_POINT}
 )
