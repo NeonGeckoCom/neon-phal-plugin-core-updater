@@ -27,9 +27,10 @@
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import requests
+import subprocess
 
 from os.path import dirname
-from subprocess import run, CREATE_NEW_CONSOLE
+from subprocess import run
 from mycroft_bus_client import Message
 from ovos_utils.log import LOG
 from ovos_plugin_manager.phal import PHALPlugin
@@ -98,4 +99,4 @@ class CoreUpdater(PHALPlugin):
             self.update_command
         LOG.debug(command)
         run(command, shell=True, start_new_session=True,
-            creationflags=CREATE_NEW_CONSOLE)
+            creationflags=subprocess.CREATE_NEW_CONSOLE)
