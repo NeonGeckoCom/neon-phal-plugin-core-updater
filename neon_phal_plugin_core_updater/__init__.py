@@ -29,7 +29,7 @@
 import requests
 
 from os.path import dirname
-from subprocess import run
+from subprocess import run, DETACHED_PROCESS
 from mycroft_bus_client import Message
 from ovos_utils.log import LOG
 from ovos_plugin_manager.phal import PHALPlugin
@@ -46,9 +46,9 @@ class CoreUpdater(PHALPlugin):
         self.core_package = self.config.get("core_module") or "neon_core"
         self.github_ref = self.config.get("github_ref", "NeonGeckoCom/NeonCore")
         self.pypi_ref = self.config.get("pypi_ref")
+        self._installed_version = self._get_installed_core_version()
         self.bus.on("neon.core_updater.check_update", self.check_core_updates)
         self.bus.on("neon.core_updater.start_update", self.start_core_updates)
-        self._installed_version = self._get_installed_core_version()
 
     def _get_installed_core_version(self):
         """
@@ -61,6 +61,7 @@ class CoreUpdater(PHALPlugin):
         """
         Check for a new core version and reply
         """
+        LOG.debug(f"Checking for update. current={self._installed_version}")
         update_alpha = 'a' in self._installed_version
         new_version = None
         if self.pypi_ref:
@@ -93,7 +94,8 @@ class CoreUpdater(PHALPlugin):
         """
         version = message.data.get("version")
         LOG.info(f"Starting Core Update to version: {version}")
-        command = f"{self.update_command} {version}" if version else \
+        command = f"bash {self.update_command} {version}" if version else \
             self.update_command
         LOG.debug(command)
-        run(command, shell=True, start_new_session=True)
+        run(command, shell=True, start_new_session=True,
+            creationflags=DETACHED_PROCESS)
