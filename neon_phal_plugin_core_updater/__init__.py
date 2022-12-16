@@ -27,10 +27,9 @@
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import requests
-import subprocess
 
+from subprocess import Popen
 from os.path import dirname
-from subprocess import run
 from mycroft_bus_client import Message
 from ovos_utils.log import LOG
 from ovos_plugin_manager.phal import PHALPlugin
@@ -78,6 +77,8 @@ class CoreUpdater(PHALPlugin):
                     break
                 else:
                     new_version = release.get("name")
+        else:
+            LOG.error("No remote reference to check for updates")
 
         if new_version:
             LOG.info(f"Found newer release: {new_version}")
@@ -86,8 +87,6 @@ class CoreUpdater(PHALPlugin):
                                             "installed_version": self._installed_version,
                                             "github_ref": self.github_ref,
                                             "pypi_ref": self.pypi_ref}))
-        else:
-            LOG.error("No remote reference to check for updates")
 
     def start_core_updates(self, message):
         """
@@ -95,8 +94,7 @@ class CoreUpdater(PHALPlugin):
         """
         version = message.data.get("version")
         LOG.info(f"Starting Core Update to version: {version}")
-        command = f"bash {self.update_command} {version}" if version else \
+        command = f"nohup {self.update_command} {version}" if version else \
             self.update_command
         LOG.debug(command)
-        run(command, shell=True, start_new_session=True,
-            creationflags=subprocess.CREATE_NEW_CONSOLE)
+        Popen(command, shell=True, start_new_session=True)
