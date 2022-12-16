@@ -39,10 +39,7 @@ class CoreUpdater(PHALPlugin):
     def __init__(self, bus=None, name="neon-phal-plugin-core-updater",
                  config=None):
         PHALPlugin.__init__(self, bus, name, config)
-        self.update_command = self.config.get("update_command",
-                                              f"{dirname(__file__)}/"
-                                              f"update_scripts/"
-                                              f"neon_os_2022_12.sh")
+        self.update_command = self.config.get("update_command")
         self.core_package = self.config.get("core_module") or "neon_core"
         self.github_ref = self.config.get("github_ref", "NeonGeckoCom/NeonCore")
         self.pypi_ref = self.config.get("pypi_ref")
@@ -62,7 +59,8 @@ class CoreUpdater(PHALPlugin):
         Check for a new core version and reply
         """
         LOG.debug(f"Checking for update. current={self._installed_version}")
-        update_alpha = 'a' in self._installed_version
+        update_alpha = message.data.get("include_prerelease",
+                                        'a' in self._installed_version)
         new_version = None
         if self.pypi_ref:
             # TODO: Implement PyPI version check
@@ -94,7 +92,7 @@ class CoreUpdater(PHALPlugin):
         """
         version = message.data.get("version")
         LOG.info(f"Starting Core Update to version: {version}")
-        command = f"nohup {self.update_command} {version}" if version else \
+        command = f"{self.update_command} {version}" if version else \
             self.update_command
         LOG.debug(command)
         Popen(command, shell=True, start_new_session=True)
