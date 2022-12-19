@@ -94,9 +94,12 @@ class CoreUpdater(PHALPlugin):
         """
         Start a core update. Note that the update process may kill this thread.
         """
-        version = message.data.get("version")
-        LOG.info(f"Starting Core Update to version: {version}")
-        command = f"{self.update_command} {version}" if version else \
-            self.update_command
-        LOG.debug(command)
-        Popen(command, shell=True, start_new_session=True)
+        if self.update_command:
+            version = message.data.get("version")
+            LOG.info(f"Starting Core Update to version: {version}")
+            command = f"{self.update_command} {version}" if version else \
+                self.update_command
+            LOG.debug(command)
+            Popen(command, shell=True, start_new_session=True)
+        else:
+            LOG.error(f"Requested update but no command is configured")
