@@ -59,8 +59,8 @@ class CoreUpdater(PHALPlugin):
         Check for a new core version and reply
         """
         LOG.debug(f"Checking for update. current={self._installed_version}")
-        update_alpha = message.data.get("include_prerelease",
-                                        'a' in self._installed_version)
+        update_alpha = message.data.get("include_prerelease") or \
+            'a' in self._installed_version
         new_version = None
         latest_version = None
         if self.pypi_ref:
