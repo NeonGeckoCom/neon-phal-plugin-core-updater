@@ -62,6 +62,7 @@ class CoreUpdater(PHALPlugin):
         update_alpha = message.data.get("include_prerelease",
                                         'a' in self._installed_version)
         new_version = None
+        latest_version = None
         if self.pypi_ref:
             # TODO: Implement PyPI version check
             pass
@@ -72,8 +73,10 @@ class CoreUpdater(PHALPlugin):
                 if release.get("prerelease") and not update_alpha:
                     continue
                 elif release.get("name") == self._installed_version:
+                    latest_version = latest_version or release.get("name")
                     break
                 else:
+                    latest_version = latest_version or release.get("name")
                     new_version = release.get("name")
         else:
             LOG.error("No remote reference to check for updates")
@@ -82,6 +85,7 @@ class CoreUpdater(PHALPlugin):
             LOG.info(f"Found newer release: {new_version}")
         if message:
             self.bus.emit(message.response({"new_version": new_version,
+                                            "latest_version": latest_version,
                                             "installed_version": self._installed_version,
                                             "github_ref": self.github_ref,
                                             "pypi_ref": self.pypi_ref}))
