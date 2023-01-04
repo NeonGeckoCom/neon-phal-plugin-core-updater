@@ -25,10 +25,11 @@
 # LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-from time import sleep
 
 import requests
 
+from time import sleep
+from os import close
 from subprocess import Popen, PIPE
 from tempfile import mkstemp
 from mycroft_bus_client import Message
@@ -104,10 +105,7 @@ class CoreUpdater(PHALPlugin):
             LOG.info(f"Running patches from: {self.patch_script}")
             contents = requests.get(self.patch_script).text
             ref, temp_path = mkstemp()
-            try:
-                ref.close()
-            except Exception as e:
-                LOG.error(e)
+            close(ref)
             with open(temp_path, 'w+') as f:
                 f.write(contents)
             try:
