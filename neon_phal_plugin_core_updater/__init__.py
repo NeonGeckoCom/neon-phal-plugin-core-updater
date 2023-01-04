@@ -25,6 +25,7 @@
 # LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+from time import sleep
 
 import requests
 
@@ -103,13 +104,18 @@ class CoreUpdater(PHALPlugin):
             LOG.info(f"Running patches from: {self.patch_script}")
             contents = requests.get(self.patch_script).text
             ref, temp_path = mkstemp()
-            ref.write(contents)
-            ref.close()
+            try:
+                ref.close()
+            except Exception as e:
+                LOG.error(e)
+            with open(temp_path, 'w+') as f:
+                f.write(contents)
             try:
                 Popen(f"chmod ugo+x {temp_path}", shell=True).wait(30)
             except Exception as e:
                 LOG.error(e)
             try:
+                sleep(1)
                 LOG.info(f"Running {temp_path}")
                 patch = Popen(temp_path, stdout=PIPE, stderr=PIPE)
                 LOG.info(f"Patch finished with: {patch.wait(timeout=60)}")
