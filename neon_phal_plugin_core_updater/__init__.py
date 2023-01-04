@@ -25,6 +25,7 @@
 # LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+from tempfile import mkstemp
 
 import requests
 
@@ -43,6 +44,11 @@ class CoreUpdater(PHALPlugin):
         self.core_package = self.config.get("core_module") or "neon_core"
         self.github_ref = self.config.get("github_ref", "NeonGeckoCom/NeonCore")
         self.pypi_ref = self.config.get("pypi_ref")
+        self.patch_script = self.config.get("patch_script",
+                                            "https://raw.githubusercontent.com/"
+                                            "NeonGeckoCom/neon-image-recipe/"
+                                            "FEAT_CoreUpdateVersioning/"
+                                            "automation/apply_patches.sh")
         self._installed_version = self._get_installed_core_version()
         self.bus.on("neon.core_updater.check_update", self.check_core_updates)
         self.bus.on("neon.core_updater.start_update", self.start_core_updates)
@@ -94,6 +100,15 @@ class CoreUpdater(PHALPlugin):
         """
         Start a core update. Note that the update process may kill this thread.
         """
+        if self.patch_script:
+            LOG.info(f"Running patches from: {self.patch_script}")
+            contents = requests.get(self.patch_script).text
+            _, temp_path = mkstemp()
+            with open(temp_path, 'w+') as f:
+                f.write(contents)
+            patch = Popen(temp_path, shell=True)
+            patch.communicate(timeout=60)
+            LOG.info(f"Patch finished with: {patch.returncode}")
         if self.update_command:
             version = message.data.get("version")
             LOG.info(f"Starting Core Update to version: {version}")
