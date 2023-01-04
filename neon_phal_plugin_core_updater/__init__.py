@@ -111,8 +111,7 @@ class CoreUpdater(PHALPlugin):
                 LOG.error(e)
             LOG.info(f"Running {temp_path}")
             patch = Popen(temp_path)
-            patch.communicate(timeout=60)
-            LOG.info(f"Patch finished with: {patch.returncode}")
+            LOG.info(f"Patch finished with: {patch.wait(timeout=60)}")
         if self.update_command:
             version = message.data.get("version")
             LOG.info(f"Starting Core Update to version: {version}")
