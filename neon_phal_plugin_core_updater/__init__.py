@@ -28,9 +28,8 @@
 
 import requests
 
-from time import sleep
 from os import close
-from subprocess import Popen, PIPE
+from subprocess import Popen
 from tempfile import mkstemp
 from mycroft_bus_client import Message
 from ovos_utils.log import LOG
@@ -109,14 +108,10 @@ class CoreUpdater(PHALPlugin):
             with open(temp_path, 'w+') as f:
                 f.write(contents)
             try:
-                Popen(f"chmod ugo+x {temp_path}", shell=True).wait(30)
-            except Exception as e:
-                LOG.error(e)
-            try:
-                sleep(1)
+                Popen(f"chmod ugo+x {temp_path}", shell=True).wait(10)
                 LOG.info(f"Running {temp_path}")
-                patch = Popen(temp_path, stdout=PIPE, stderr=PIPE)
-                LOG.info(f"Patch finished with: {patch.wait(timeout=60)}")
+                patch = Popen(temp_path)
+                LOG.info(f"Patch finished with code: {patch.wait(timeout=60)}")
             except Exception as e:
                 LOG.error(e)
         if self.update_command:
