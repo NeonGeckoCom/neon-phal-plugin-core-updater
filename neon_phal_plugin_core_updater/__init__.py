@@ -47,6 +47,10 @@ class CoreUpdater(PHALPlugin):
         self.bus.on("neon.core_updater.check_update", self.check_core_updates)
         self.bus.on("neon.core_updater.start_update", self.start_core_updates)
 
+    @property
+    def update_config(self):
+        return self.config.get("update_config", True)
+
     def _get_installed_core_version(self):
         """
         Get the currently installed core version at init
@@ -94,6 +98,10 @@ class CoreUpdater(PHALPlugin):
         """
         Start a core update. Note that the update process may kill this thread.
         """
+        if self.update_config:
+            self.bus.emit(message.forward("neon.update_config",
+                                          {'skill_config': True,
+                                           'system_config': True}))
         if self.update_command:
             version = message.data.get("version")
             LOG.info(f"Starting Core Update to version: {version}")
