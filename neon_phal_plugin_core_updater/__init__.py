@@ -28,8 +28,9 @@
 
 import requests
 
+from os import close
 from subprocess import Popen
-from os.path import dirname
+from tempfile import mkstemp
 from mycroft_bus_client import Message
 from ovos_utils.log import LOG
 from ovos_plugin_manager.phal import PHALPlugin
@@ -43,6 +44,7 @@ class CoreUpdater(PHALPlugin):
         self.core_package = self.config.get("core_module") or "neon_core"
         self.github_ref = self.config.get("github_ref", "NeonGeckoCom/NeonCore")
         self.pypi_ref = self.config.get("pypi_ref")
+        self.patch_script = self.config.get("patch_script")
         self._installed_version = self._get_installed_core_version()
         self.bus.on("neon.core_updater.check_update", self.check_core_updates)
         self.bus.on("neon.core_updater.start_update", self.start_core_updates)
@@ -94,6 +96,24 @@ class CoreUpdater(PHALPlugin):
         """
         Start a core update. Note that the update process may kill this thread.
         """
+        if self.patch_script:
+            LOG.info(f"Running patches from: {self.patch_script}")
+            patch_script = requests.get(self.patch_script)
+            if patch_script.ok:
+                ref, temp_path = mkstemp()
+                close(ref)
+                with open(temp_path, 'w+') as f:
+                    f.write(patch_script.text)
+                try:
+                    Popen(f"chmod ugo+x {temp_path}", shell=True).wait(10)
+                    LOG.info(f"Running {temp_path}")
+                    patch = Popen(temp_path)
+                    LOG.info(f"Patch finished with code: {patch.wait(timeout=60)}")
+                except Exception as e:
+                    LOG.error(e)
+            else:
+                LOG.error(f"Error getting patch: {patch_script.status_code}")
+                LOG.error(patch_script.text)
         if self.update_command:
             version = message.data.get("version")
             LOG.info(f"Starting Core Update to version: {version}")
