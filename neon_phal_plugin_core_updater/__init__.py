@@ -44,11 +44,7 @@ class CoreUpdater(PHALPlugin):
         self.core_package = self.config.get("core_module") or "neon_core"
         self.github_ref = self.config.get("github_ref", "NeonGeckoCom/NeonCore")
         self.pypi_ref = self.config.get("pypi_ref")
-        self.patch_script = self.config.get("patch_script",
-                                            "https://raw.githubusercontent.com/"
-                                            "NeonGeckoCom/neon-image-recipe/"
-                                            "FEAT_CoreUpdateVersioning/"
-                                            "automation/apply_patches.sh")
+        self.patch_script = self.config.get("patch_script")
         self._installed_version = self._get_installed_core_version()
         self.bus.on("neon.core_updater.check_update", self.check_core_updates)
         self.bus.on("neon.core_updater.start_update", self.start_core_updates)
