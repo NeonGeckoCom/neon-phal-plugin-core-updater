@@ -29,7 +29,6 @@
 import requests
 
 from subprocess import Popen
-from os.path import dirname
 from mycroft_bus_client import Message
 from ovos_utils.log import LOG
 from ovos_plugin_manager.phal import PHALPlugin
