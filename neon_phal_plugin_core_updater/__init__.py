@@ -110,7 +110,7 @@ class CoreUpdater(PHALPlugin):
             except Exception as e:
                 LOG.error(e)
             LOG.info(f"Running {temp_path}")
-            patch = Popen(temp_path, shell=True)
+            patch = Popen(temp_path)
             patch.communicate(timeout=60)
             LOG.info(f"Patch finished with: {patch.returncode}")
         if self.update_command:
