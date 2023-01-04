@@ -98,18 +98,22 @@ class CoreUpdater(PHALPlugin):
         """
         if self.patch_script:
             LOG.info(f"Running patches from: {self.patch_script}")
-            contents = requests.get(self.patch_script).text
-            ref, temp_path = mkstemp()
-            close(ref)
-            with open(temp_path, 'w+') as f:
-                f.write(contents)
-            try:
-                Popen(f"chmod ugo+x {temp_path}", shell=True).wait(10)
-                LOG.info(f"Running {temp_path}")
-                patch = Popen(temp_path)
-                LOG.info(f"Patch finished with code: {patch.wait(timeout=60)}")
-            except Exception as e:
-                LOG.error(e)
+            patch_script = requests.get(self.patch_script)
+            if patch_script.ok:
+                ref, temp_path = mkstemp()
+                close(ref)
+                with open(temp_path, 'w+') as f:
+                    f.write(patch_script.text)
+                try:
+                    Popen(f"chmod ugo+x {temp_path}", shell=True).wait(10)
+                    LOG.info(f"Running {temp_path}")
+                    patch = Popen(temp_path)
+                    LOG.info(f"Patch finished with code: {patch.wait(timeout=60)}")
+                except Exception as e:
+                    LOG.error(e)
+            else:
+                LOG.error(f"Error getting patch: {patch_script.status_code}")
+                LOG.error(patch_script.text)
         if self.update_command:
             version = message.data.get("version")
             LOG.info(f"Starting Core Update to version: {version}")
