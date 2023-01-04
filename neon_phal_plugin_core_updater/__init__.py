@@ -25,12 +25,11 @@
 # LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-from tempfile import mkstemp
 
 import requests
 
 from subprocess import Popen
-from os.path import dirname
+from tempfile import mkstemp
 from mycroft_bus_client import Message
 from ovos_utils.log import LOG
 from ovos_plugin_manager.phal import PHALPlugin
@@ -107,9 +106,10 @@ class CoreUpdater(PHALPlugin):
             with open(temp_path, 'w+') as f:
                 f.write(contents)
             try:
-                Popen(f"chmod ugo+x {temp_path}", shell=True).communicate()
+                Popen(f"chmod ugo+x {temp_path}", shell=True).wait(30)
             except Exception as e:
                 LOG.error(e)
+            LOG.info(f"Running {temp_path}")
             patch = Popen(temp_path, shell=True)
             patch.communicate(timeout=60)
             LOG.info(f"Patch finished with: {patch.returncode}")
