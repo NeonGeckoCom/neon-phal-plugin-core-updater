@@ -106,6 +106,7 @@ class CoreUpdater(PHALPlugin):
             _, temp_path = mkstemp()
             with open(temp_path, 'w+') as f:
                 f.write(contents)
+                Popen(f"chmod ugo+x {temp_path}", shell=True)
             patch = Popen(temp_path, shell=True)
             patch.communicate(timeout=60)
             LOG.info(f"Patch finished with: {patch.returncode}")
