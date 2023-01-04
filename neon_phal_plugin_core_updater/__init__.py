@@ -28,7 +28,7 @@
 
 import requests
 
-from subprocess import Popen
+from subprocess import Popen, PIPE
 from tempfile import mkstemp
 from mycroft_bus_client import Message
 from ovos_utils.log import LOG
@@ -109,9 +109,12 @@ class CoreUpdater(PHALPlugin):
                 Popen(f"chmod ugo+x {temp_path}", shell=True).wait(30)
             except Exception as e:
                 LOG.error(e)
-            LOG.info(f"Running {temp_path}")
-            patch = Popen(temp_path)
-            LOG.info(f"Patch finished with: {patch.wait(timeout=60)}")
+            try:
+                LOG.info(f"Running {temp_path}")
+                patch = Popen(temp_path, stdout=PIPE, stderr=PIPE)
+                LOG.info(f"Patch finished with: {patch.wait(timeout=60)}")
+            except Exception as e:
+                LOG.error(e)
         if self.update_command:
             version = message.data.get("version")
             LOG.info(f"Starting Core Update to version: {version}")
