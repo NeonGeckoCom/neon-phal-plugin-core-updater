@@ -102,9 +102,9 @@ class CoreUpdater(PHALPlugin):
         if self.patch_script:
             LOG.info(f"Running patches from: {self.patch_script}")
             contents = requests.get(self.patch_script).text
-            _, temp_path = mkstemp()
-            with open(temp_path, 'w+') as f:
-                f.write(contents)
+            ref, temp_path = mkstemp()
+            ref.write(contents)
+            ref.close()
             try:
                 Popen(f"chmod ugo+x {temp_path}", shell=True).wait(30)
             except Exception as e:
