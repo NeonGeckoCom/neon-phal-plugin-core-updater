@@ -115,7 +115,7 @@ class CoreUpdater(PHALPlugin):
                 LOG.error(f"Error getting patch: {patch_script.status_code}")
                 LOG.error(patch_script.text)
         self.bus.wait_for_response(message.forward("neon.update_config",
-                                                   {"skill_config": True,
+                                                   {"skill_config": False,
                                                     "core_config": True,
                                                     "restart": False}),
                                    timeout=30)
