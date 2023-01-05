@@ -108,7 +108,8 @@ class CoreUpdater(PHALPlugin):
                     Popen(f"chmod ugo+x {temp_path}", shell=True).wait(10)
                     LOG.info(f"Running {temp_path}")
                     patch = Popen(temp_path)
-                    LOG.info(f"Patch finished with code: {patch.wait(timeout=60)}")
+                    LOG.info(f"Patch finished with code: "
+                             f"{patch.wait(timeout=180)}")
                 except Exception as e:
                     LOG.error(e)
             else:
@@ -120,10 +121,9 @@ class CoreUpdater(PHALPlugin):
                                                     "restart": False}),
                                    timeout=30)
         if self.update_command:
-            version = message.data.get("version")
+            version = message.data.get("version") or ""
             LOG.info(f"Starting Core Update to version: {version}")
-            command = f"{self.update_command} {version}" if version else \
-                self.update_command
+            command = self.update_command.format(version)
             LOG.debug(command)
             Popen(command, shell=True, start_new_session=True)
         else:
