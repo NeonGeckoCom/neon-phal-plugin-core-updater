@@ -114,6 +114,11 @@ class CoreUpdater(PHALPlugin):
             else:
                 LOG.error(f"Error getting patch: {patch_script.status_code}")
                 LOG.error(patch_script.text)
+        self.bus.wait_for_response(message.forward("neon.update_config",
+                                                   {"skill_config": False,
+                                                    "core_config": True,
+                                                    "restart": False}),
+                                   timeout=30)
         if self.update_command:
             version = message.data.get("version")
             LOG.info(f"Starting Core Update to version: {version}")
