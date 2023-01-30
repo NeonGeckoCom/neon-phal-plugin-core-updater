@@ -116,6 +116,7 @@ class CoreUpdater(PHALPlugin):
         Start a core update. Note that the update process may kill this thread.
         """
         version = message.data.get("version")
+        LOG.debug(f"Starting update to version: {version}")
         if self.patch_script:
             patch_ver = version.split('a')[0] if version else "master"
             patch_script = self.patch_script.format(patch_ver)
