@@ -25,6 +25,7 @@
 # LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+from os.path import isfile
 
 import requests
 
@@ -122,6 +123,10 @@ class CoreUpdater(PHALPlugin):
         if self.update_command:
             version = message.data.get("version") or ""
             LOG.info(f"Starting Core Update to version: {version}")
+            if isfile("/etc/neon/versions.conf"):
+                LOG.info(f"Writing requested version ({version}) to config")
+                with open("/etc/neon/versions.conf", 'w') as f:
+                    f.write(f"NEON_CORE_REF={version}")
             command = self.update_command.format(version)
             LOG.debug(command)
             Popen(command, shell=True, start_new_session=True)
