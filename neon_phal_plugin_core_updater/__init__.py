@@ -26,6 +26,7 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 from os.path import isfile
+from typing import List
 
 import requests
 
@@ -50,12 +51,28 @@ class CoreUpdater(PHALPlugin):
         self.bus.on("neon.core_updater.check_update", self.check_core_updates)
         self.bus.on("neon.core_updater.start_update", self.start_core_updates)
 
-    def _get_installed_core_version(self):
+    def _get_installed_core_version(self) -> str:
         """
         Get the currently installed core version at init
         """
         from neon_utils.packaging_utils import get_package_version_spec
-        return get_package_version_spec(self.core_package)
+        try:
+            return get_package_version_spec(self.core_package)
+        except ModuleNotFoundError as e:
+            LOG.warning(e)
+            return "0.0.0"
+
+    def _get_github_releases(self) -> List[str]:
+        """
+        Get GitHub release names in reverse-chronological order (newest first).
+        """
+        url = f'https://api.github.com/repos/{self.github_ref}/releases'
+        releases = requests.get(url).json()
+        return [r.get('name') for r in releases]
+
+    def _get_pypi_releases(self):
+        # TODO: Implement package release checks
+        return []
 
     def check_core_updates(self, message: Message):
         """
@@ -66,22 +83,24 @@ class CoreUpdater(PHALPlugin):
         new_version = None
         latest_version = None
         if self.pypi_ref:
-            # TODO: Implement PyPI version check
-            pass
+            releases = self._get_github_releases()
         elif self.github_ref:
-            url = f'https://api.github.com/repos/{self.github_ref}/releases'
-            releases = requests.get(url).json()
-            for release in releases:
-                if release.get("prerelease") and not update_alpha:
-                    continue
-                elif release.get("name") == self._installed_version:
-                    latest_version = latest_version or release.get("name")
-                    break
-                else:
-                    latest_version = latest_version or release.get("name")
-                    new_version = release.get("name")
+            releases = self._get_github_releases()
         else:
             LOG.error("No remote reference to check for updates")
+            releases = []
+
+        for release in releases:
+            if 'a' in release and not update_alpha:
+                # Ignore an alpha release
+                continue
+            elif release == self._installed_version:
+                latest_version = latest_version or release
+                # We Got to the installed version, stop parsing
+                break
+            else:
+                latest_version = latest_version or release
+                new_version = new_version or release
 
         if new_version:
             LOG.info(f"Found newer release: {new_version}")
