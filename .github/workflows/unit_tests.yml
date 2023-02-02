@@ -20,3 +20,30 @@ jobs:
       - name: Build Distribution Packages
         run: |
           python setup.py bdist_wheel
+  unit_tests:
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        python-version: [ 3.7, 3.8, 3.9, '3.10' ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install portaudio19-dev python3-pyaudio libpulse-dev ffmpeg
+          python -m pip install --upgrade pip
+          pip install cython
+          pip install . -r requirements/test_requirements.txt
+      - name: Unit Tests
+        run: |
+          pytest tests/unit_tests.py --doctest-modules --junitxml=tests/unit-test-results.xml
+      - name: Upload Unit test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: unit-test-results
+          path: tests/unit-test-results.xml
