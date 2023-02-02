@@ -144,12 +144,13 @@ class CoreUpdater(PHALPlugin):
                                                     "restart": False}),
                                    timeout=30)
         if self.update_command:
-            version = version or ""
-            LOG.info(f"Starting Core Update to version: {version or 'master'}")
+            branch_spec = version or 'master'
+            LOG.info(f"Starting Core Update to version: {branch_spec}")
             if isfile("/etc/neon/versions.conf"):
-                LOG.info(f"Writing requested version ({version or 'master'}) to config")
+                LOG.info(f"Writing requested version ({branch_spec}) to config")
                 with open("/etc/neon/versions.conf", 'w') as f:
-                    f.write(f"NEON_CORE_REF={version or 'master'}")
+                    f.write(f"NEON_CORE_REF={branch_spec}")
+            version = version or ""
             command = self.update_command.format(version)
             LOG.debug(command)
             Popen(command, shell=True, start_new_session=True)
