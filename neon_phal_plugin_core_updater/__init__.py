@@ -141,7 +141,8 @@ class CoreUpdater(PHALPlugin):
         self.bus.wait_for_response(message.forward("neon.update_config",
                                                    {"skill_config": False,
                                                     "core_config": True,
-                                                    "restart": False}),
+                                                    "restart": False,
+                                                    "version": patch_ver}),
                                    timeout=30)
         if self.update_command:
             branch_spec = version or 'master'
