@@ -117,8 +117,8 @@ class CoreUpdater(PHALPlugin):
         """
         version = message.data.get("version")
         LOG.debug(f"Starting update to version: {version}")
+        patch_ver = version.split('a')[0] if version else "master"
         if self.patch_script:
-            patch_ver = version.split('a')[0] if version else "master"
             patch_script = self.patch_script.format(patch_ver)
             LOG.info(f"Running patches from: {patch_script}")
             patch_script = requests.get(patch_script)
@@ -130,7 +130,7 @@ class CoreUpdater(PHALPlugin):
                 try:
                     Popen(f"chmod ugo+x {temp_path}", shell=True).wait(10)
                     LOG.info(f"Running {temp_path}")
-                    patch = Popen(temp_path)
+                    patch = Popen([temp_path, version])
                     LOG.info(f"Patch finished with code: "
                              f"{patch.wait(timeout=180)}")
                 except Exception as e:
