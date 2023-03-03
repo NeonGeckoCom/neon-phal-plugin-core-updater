@@ -115,7 +115,7 @@ class CoreUpdater(PHALPlugin):
         """
         Start a core update. Note that the update process may kill this thread.
         """
-        version = message.data.get("version")
+        version = message.data.get("version", "")
         LOG.debug(f"Starting update to version: {version}")
         patch_ver = version.split('a')[0] if version else "master"
         if self.patch_script:
@@ -151,7 +151,6 @@ class CoreUpdater(PHALPlugin):
                 LOG.info(f"Writing requested version ({branch_spec}) to config")
                 with open("/etc/neon/versions.conf", 'w') as f:
                     f.write(f"NEON_CORE_REF={branch_spec}")
-            version = version or ""
             command = self.update_command.format(version)
             LOG.debug(command)
             Popen(command, shell=True, start_new_session=True)
