@@ -130,7 +130,7 @@ class CoreUpdater(PHALPlugin):
                 try:
                     Popen(f"chmod ugo+x {temp_path}", shell=True).wait(10)
                     LOG.info(f"Running {temp_path}")
-                    patch = Popen([temp_path, version])
+                    patch = Popen([temp_path, patch_ver])
                     LOG.info(f"Patch finished with code: "
                              f"{patch.wait(timeout=180)}")
                 except Exception as e:
