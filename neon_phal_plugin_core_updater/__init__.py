@@ -25,11 +25,12 @@
 # LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-from os.path import isfile
-from typing import List
 
 import requests
 
+from os.path import isfile
+from typing import List
+from datetime import datetime
 from os import close
 from subprocess import Popen
 from tempfile import mkstemp
@@ -66,8 +67,12 @@ class CoreUpdater(PHALPlugin):
         """
         Get GitHub release names in reverse-chronological order (newest first).
         """
+        default_time = "2000-01-01T00:00:00Z"
         url = f'https://api.github.com/repos/{self.github_ref}/releases'
-        releases = requests.get(url).json()
+        releases: list = requests.get(url).json()
+        releases.sort(key=lambda r: datetime.strptime(r.get('created_at',
+                                                            default_time),
+                                                      "%Y-%m-%dT%H:%M:%SZ"))
         return [r.get('name') for r in releases]
 
     def _get_pypi_releases(self):
