@@ -72,7 +72,8 @@ class CoreUpdater(PHALPlugin):
         releases: list = requests.get(url).json()
         releases.sort(key=lambda r: datetime.strptime(r.get('created_at',
                                                             default_time),
-                                                      "%Y-%m-%dT%H:%M:%SZ"))
+                                                      "%Y-%m-%dT%H:%M:%SZ"),
+                      reverse=True)
         return [r.get('name') for r in releases]
 
     def _get_pypi_releases(self):
