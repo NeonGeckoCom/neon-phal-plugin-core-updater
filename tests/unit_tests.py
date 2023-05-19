@@ -58,8 +58,8 @@ class PluginTests(unittest.TestCase):
         for i, r in enumerate(releases):
             if i == 0:
                 continue
-            new = _parse_version(r)
-            old = _parse_version(releases[i - 1])
+            old = _parse_version(r)
+            new = _parse_version(releases[i - 1])
             self.assertGreaterEqual(new[0], old[0], f"new={new}|old={old}")
             if new[0] == old[0]:
                 # Same year, month must be greater
