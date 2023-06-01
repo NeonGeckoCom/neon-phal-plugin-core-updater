@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.1a5](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/tree/1.0.1a5) (2023-06-01)
+
+[Full Changelog](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/compare/1.0.1a4...1.0.1a5)
+
+**Merged pull requests:**
+
+- Explicitly enable updating `apps` config, separate from `skills` [\#26](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/pull/26) ([NeonDaniel](https://github.com/NeonDaniel))
+
 ## [1.0.1a4](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/tree/1.0.1a4) (2023-06-01)
 
 [Full Changelog](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/compare/1.0.0...1.0.1a4)
