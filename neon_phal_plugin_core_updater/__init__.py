@@ -123,11 +123,16 @@ class CoreUpdater(PHALPlugin):
         """
         version = message.data.get("version", "")
         LOG.debug(f"Starting update to version: {version}")
+        default_branch = "dev" if "a" in version else "master"
         patch_ver = version.split('a')[0] if version else "master"
         if self.patch_script:
             patch_script = self.patch_script.format(patch_ver)
             LOG.info(f"Running patches from: {patch_script}")
             patch_script = requests.get(patch_script)
+            if not patch_script.ok:
+                LOG.info(f"No branch for {patch_ver}, trying {default_branch}")
+                patch_script = \
+                    requests.get(self.patch_script.format(default_branch))
             if patch_script.ok:
                 ref, temp_path = mkstemp()
                 close(ref)
