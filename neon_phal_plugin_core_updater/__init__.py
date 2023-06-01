@@ -127,13 +127,13 @@ class CoreUpdater(PHALPlugin):
         patch_ver = version.split('a')[0] if version else "master"
         if self.patch_script:
             patch_script = self.patch_script.format(patch_ver)
-            LOG.info(f"Running patches from: {patch_script}")
             patch_script = requests.get(patch_script)
             if not patch_script.ok:
                 LOG.info(f"No branch for {patch_ver}, trying {default_branch}")
                 patch_script = \
                     requests.get(self.patch_script.format(default_branch))
             if patch_script.ok:
+                LOG.info(f"Running patches from: {patch_script}")
                 ref, temp_path = mkstemp()
                 close(ref)
                 with open(temp_path, 'w+') as f:
@@ -151,6 +151,7 @@ class CoreUpdater(PHALPlugin):
                 LOG.error(patch_script.text)
         self.bus.wait_for_response(message.forward("neon.update_config",
                                                    {"skill_config": False,
+                                                    "apps_config": True,
                                                     "core_config": True,
                                                     "restart": False,
                                                     "version": patch_ver}),
