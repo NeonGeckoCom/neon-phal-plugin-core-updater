@@ -30,39 +30,30 @@ from setuptools import setup, find_packages
 from os import path, getenv
 
 PLUGIN_ENTRY_POINT = "neon-phal-plugin-core-updater=neon_phal_plugin_core_updater:CoreUpdater"
-BASEDIR = path.abspath(path.dirname(__file__))
+BASE_PATH = path.abspath(path.dirname(__file__))
 
 
-with open("./version.py", "r", encoding="utf-8") as v:
+def get_requirements(requirements_filename: str):
+    requirements_file = path.join(BASE_PATH, "requirements",
+                                  requirements_filename)
+    with open(requirements_file, 'r', encoding='utf-8') as r:
+        requirements = r.readlines()
+    requirements = [r.strip() for r in requirements if r.strip() and
+                    not r.strip().startswith("#")]
+    return requirements
+
+
+with open(path.join(BASE_PATH, "README.md"), "r") as f:
+    long_description = f.read()
+
+with open(path.join(BASE_PATH, "version.py"), "r",
+          encoding="utf-8") as v:
     for line in v.readlines():
         if line.startswith("__version__"):
             if '"' in line:
                 version = line.split('"')[1]
             else:
                 version = line.split("'")[1]
-
-with open("README.md", "r") as f:
-    long_description = f.read()
-
-
-def get_requirements(requirements_filename: str):
-    requirements_file = path.join(path.abspath(path.dirname(__file__)),
-                                  "requirements", requirements_filename)
-    with open(requirements_file, 'r', encoding='utf-8') as r:
-        requirements = r.readlines()
-    requirements = [r.strip() for r in requirements if r.strip() and not r.strip().startswith("#")]
-
-    for i in range(0, len(requirements)):
-        r = requirements[i]
-        if "@" in r:
-            parts = [p.lower() if p.strip().startswith("git+http") else p for p in r.split('@')]
-            r = "@".join(parts)
-            if getenv("GITHUB_TOKEN"):
-                if "github.com" in r:
-                    r = r.replace("github.com", f"{getenv('GITHUB_TOKEN')}@github.com")
-            requirements[i] = r
-    return requirements
-
 
 setup(
     name='neon-phal-plugin-core-updater',
