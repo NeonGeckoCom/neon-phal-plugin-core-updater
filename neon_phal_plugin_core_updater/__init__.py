@@ -130,10 +130,11 @@ class CoreUpdater(PHALPlugin):
             patch_script = requests.get(patch_script)
             if not patch_script.ok:
                 LOG.info(f"No branch for {patch_ver}, trying {default_branch}")
+                patch_ver = default_branch
                 patch_script = \
                     requests.get(self.patch_script.format(default_branch))
             if patch_script.ok:
-                LOG.info(f"Running patches from: {patch_script}")
+                LOG.info(f"Running patches from: {patch_script.url}")
                 ref, temp_path = mkstemp()
                 close(ref)
                 with open(temp_path, 'w+') as f:
@@ -142,6 +143,7 @@ class CoreUpdater(PHALPlugin):
                     Popen(f"chmod ugo+x {temp_path}", shell=True).wait(10)
                     LOG.info(f"Running {temp_path}")
                     patch = Popen([temp_path, patch_ver])
+
                     LOG.info(f"Patch finished with code: "
                              f"{patch.wait(timeout=180)}")
                 except Exception as e:
