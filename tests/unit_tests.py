@@ -27,10 +27,9 @@
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import unittest
+
 from unittest.mock import Mock
-
 from mycroft_bus_client import Message
-
 from neon_phal_plugin_core_updater import CoreUpdater
 from ovos_utils.messagebus import FakeBus
 
@@ -46,7 +45,36 @@ class PluginTests(unittest.TestCase):
     def test_get_github_releases(self):
         self.assertEqual(self.plugin.github_ref, "NeonGeckoCom/NeonCore")
         releases = self.plugin._get_github_releases()
+
+        def _parse_version(ver):
+            year, month, day = ver.split('.')
+            if 'a' in day:
+                day, alpha = day.split('a')
+            else:
+                alpha = 0
+            return int(year), int(month), int(day), int(alpha)
+
         self.assertIsInstance(releases, list)
+        for i, r in enumerate(releases):
+            if i == 0:
+                continue
+            old = _parse_version(r)
+            new = _parse_version(releases[i - 1])
+            self.assertGreaterEqual(new[0], old[0], f"new={new}|old={old}")
+            if new[0] == old[0]:
+                # Same year, month must be greater
+                self.assertGreaterEqual(new[1], old[1], f"new={new}|old={old}")
+                if new[1] == old[1]:
+                    # Same month, day must be greater
+                    self.assertGreaterEqual(new[2], old[2],
+                                            f"new={new}|old={old}")
+                    if new[2] == old[2]:
+                        if new[3] == 0:
+                            # Stable release, alpha versions will reset
+                            continue
+                        # Same day, alpha must be greater
+                        self.assertGreaterEqual(new[3], old[3],
+                                                f"new={new}|old={old}")
 
     def test_check_core_updates(self):
         self.assertIsNone(self.plugin.pypi_ref)
