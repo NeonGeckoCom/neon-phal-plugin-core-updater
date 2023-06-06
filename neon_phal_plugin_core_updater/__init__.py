@@ -34,7 +34,7 @@ from datetime import datetime
 from os import close
 from subprocess import Popen
 from tempfile import mkstemp
-from ovos_bus_client import Message
+from ovos_bus_client.message import Message
 from ovos_utils.log import LOG
 from ovos_plugin_manager.phal import PHALPlugin
 
