@@ -110,6 +110,9 @@ class CoreUpdater(PHALPlugin):
 
         if new_version:
             LOG.info(f"Found newer version: {new_version}")
+        if not latest_version:
+            LOG.debug("Handling installed version as latest")
+            latest_version = self._installed_version
         LOG.info(f"Got latest version: {latest_version}")
         if message:
             self.bus.emit(message.response({"new_version": new_version,
