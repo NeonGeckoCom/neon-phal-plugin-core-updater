@@ -74,7 +74,7 @@ class CoreUpdater(PHALPlugin):
                                                             default_time),
                                                       "%Y-%m-%dT%H:%M:%SZ"),
                       reverse=True)
-        return [r.get('name') for r in releases]
+        return [r.get('tag_name') for r in releases]
 
     def _get_pypi_releases(self):
         # TODO: Implement package release checks
@@ -89,7 +89,7 @@ class CoreUpdater(PHALPlugin):
         new_version = None
         latest_version = None
         if self.pypi_ref:
-            releases = self._get_github_releases()
+            releases = self._get_pypi_releases()
         elif self.github_ref:
             releases = self._get_github_releases()
         else:
@@ -109,7 +109,8 @@ class CoreUpdater(PHALPlugin):
                 new_version = new_version or release
 
         if new_version:
-            LOG.info(f"Found newer release: {new_version}")
+            LOG.info(f"Found newer version: {new_version}")
+        LOG.info(f"Got latest version: {latest_version}")
         if message:
             self.bus.emit(message.response({"new_version": new_version,
                                             "latest_version": latest_version,
