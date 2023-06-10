@@ -76,6 +76,12 @@ class PluginTests(unittest.TestCase):
                         self.assertGreaterEqual(new[3], old[3],
                                                 f"new={new}|old={old}")
 
+    def test_get_latest_github_release(self):
+        release = self.plugin._get_latest_github_release()
+        self.assertIsInstance(release, str, release)
+        self.assertEqual(len(release.split('.')), 3, release)
+        self.assertNotIn('a', release, release)
+
     def test_check_core_updates(self):
         self.assertIsNone(self.plugin.pypi_ref)
         real_get_releases = self.plugin._get_github_releases
