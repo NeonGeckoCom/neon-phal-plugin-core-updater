@@ -63,6 +63,14 @@ class CoreUpdater(PHALPlugin):
             LOG.warning(e)
             return "0.0.0"
 
+    def _get_latest_github_release(self) -> str:
+        """
+        Get the latest GitHub release
+        """
+        url = f'https://api.github.com/repos/{self.github_ref}/releases/latest'
+        release = requests.get(url).json()
+        return release.get('tag_name')
+
     def _get_github_releases(self) -> List[str]:
         """
         Get GitHub release names in reverse-chronological order (newest first).
@@ -110,9 +118,9 @@ class CoreUpdater(PHALPlugin):
 
         if new_version:
             LOG.info(f"Found newer version: {new_version}")
-        if not latest_version:
-            LOG.debug("Handling installed version as latest")
-            latest_version = self._installed_version
+        if not latest_version and self.github_ref:
+            LOG.info("No release found; get 'latest'")
+            latest_version = self._get_latest_github_release()
         LOG.info(f"Got latest version: {latest_version}")
         if message:
             self.bus.emit(message.response({"new_version": new_version,
