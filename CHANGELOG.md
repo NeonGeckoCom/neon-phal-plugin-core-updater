@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.1a2](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/tree/1.2.1a2) (2023-06-15)
+
+[Full Changelog](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/compare/1.2.1a1...1.2.1a2)
+
+**Implemented enhancements:**
+
+- \[FEAT\] Update automation [\#33](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/issues/33)
+
+**Merged pull requests:**
+
+- Update GH Automation to default branch [\#35](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/pull/35) ([NeonDaniel](https://github.com/NeonDaniel))
+
 ## [1.2.1a1](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/tree/1.2.1a1) (2023-06-15)
 
 [Full Changelog](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/compare/1.2.0...1.2.1a1)
