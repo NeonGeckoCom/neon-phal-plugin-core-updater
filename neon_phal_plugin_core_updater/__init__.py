@@ -34,7 +34,7 @@ from datetime import datetime
 from os import close
 from subprocess import Popen
 from tempfile import mkstemp
-from mycroft_bus_client import Message
+from ovos_bus_client.message import Message
 from ovos_utils.log import LOG
 from ovos_plugin_manager.phal import PHALPlugin
 
@@ -63,6 +63,14 @@ class CoreUpdater(PHALPlugin):
             LOG.warning(e)
             return "0.0.0"
 
+    def _get_latest_github_release(self) -> str:
+        """
+        Get the latest GitHub release
+        """
+        url = f'https://api.github.com/repos/{self.github_ref}/releases/latest'
+        release = requests.get(url).json()
+        return release.get('tag_name')
+
     def _get_github_releases(self) -> List[str]:
         """
         Get GitHub release names in reverse-chronological order (newest first).
@@ -74,7 +82,7 @@ class CoreUpdater(PHALPlugin):
                                                             default_time),
                                                       "%Y-%m-%dT%H:%M:%SZ"),
                       reverse=True)
-        return [r.get('name') for r in releases]
+        return [r.get('tag_name') for r in releases]
 
     def _get_pypi_releases(self):
         # TODO: Implement package release checks
@@ -89,7 +97,7 @@ class CoreUpdater(PHALPlugin):
         new_version = None
         latest_version = None
         if self.pypi_ref:
-            releases = self._get_github_releases()
+            releases = self._get_pypi_releases()
         elif self.github_ref:
             releases = self._get_github_releases()
         else:
@@ -109,7 +117,11 @@ class CoreUpdater(PHALPlugin):
                 new_version = new_version or release
 
         if new_version:
-            LOG.info(f"Found newer release: {new_version}")
+            LOG.info(f"Found newer version: {new_version}")
+        if not latest_version and self.github_ref:
+            LOG.info("No release found; get 'latest'")
+            latest_version = self._get_latest_github_release()
+        LOG.info(f"Got latest version: {latest_version}")
         if message:
             self.bus.emit(message.response({"new_version": new_version,
                                             "latest_version": latest_version,

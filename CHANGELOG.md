@@ -1,32 +1,20 @@
 # Changelog
 
-## [1.1.1a1](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/tree/1.1.1a1) (2023-06-02)
+## [1.1.2a2](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/tree/1.1.2a2) (2023-06-10)
 
-[Full Changelog](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/compare/1.0.1a5...1.1.1a1)
-
-**Merged pull requests:**
-
-- Fix error in release automation [\#28](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/pull/28) ([NeonDaniel](https://github.com/NeonDaniel))
-
-## [1.0.1a5](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/tree/1.0.1a5) (2023-06-01)
-
-[Full Changelog](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/compare/1.0.1a4...1.0.1a5)
+[Full Changelog](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/compare/1.1.2a1...1.1.2a2)
 
 **Merged pull requests:**
 
-- Explicitly enable updating `apps` config, separate from `skills` [\#26](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/pull/26) ([NeonDaniel](https://github.com/NeonDaniel))
+- Prevent 'None' latest version returns [\#31](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/pull/31) ([NeonDaniel](https://github.com/NeonDaniel))
 
-## [1.0.1a4](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/tree/1.0.1a4) (2023-06-01)
+## [1.1.2a1](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/tree/1.1.2a1) (2023-06-07)
 
-[Full Changelog](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/compare/1.0.0...1.0.1a4)
+[Full Changelog](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/compare/1.1.1...1.1.2a1)
 
 **Merged pull requests:**
 
-- Fix updated automation [\#25](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/pull/25) ([NeonDaniel](https://github.com/NeonDaniel))
-- Update default update branch handling [\#24](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/pull/24) ([NeonDaniel](https://github.com/NeonDaniel))
-- Update GitHub automation to current best practices [\#23](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/pull/23) ([NeonDaniel](https://github.com/NeonDaniel))
-- Fix sort logic in core updater [\#22](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/pull/22) ([NeonDaniel](https://github.com/NeonDaniel))
-- Update to sort GH releases by publish time with unit test [\#20](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/pull/20) ([NeonDaniel](https://github.com/NeonDaniel))
+- Update messagebus dependency [\#30](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/pull/30) ([NeonDaniel](https://github.com/NeonDaniel))
 
 
 

@@ -29,7 +29,7 @@
 import unittest
 
 from unittest.mock import Mock
-from mycroft_bus_client import Message
+from ovos_bus_client.message import Message
 from neon_phal_plugin_core_updater import CoreUpdater
 from ovos_utils.messagebus import FakeBus
 
@@ -75,6 +75,12 @@ class PluginTests(unittest.TestCase):
                         # Same day, alpha must be greater
                         self.assertGreaterEqual(new[3], old[3],
                                                 f"new={new}|old={old}")
+
+    def test_get_latest_github_release(self):
+        release = self.plugin._get_latest_github_release()
+        self.assertIsInstance(release, str, release)
+        self.assertEqual(len(release.split('.')), 3, release)
+        self.assertNotIn('a', release, release)
 
     def test_check_core_updates(self):
         self.assertIsNone(self.plugin.pypi_ref)
