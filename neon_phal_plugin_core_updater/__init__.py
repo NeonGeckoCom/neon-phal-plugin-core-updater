@@ -98,8 +98,12 @@ class CoreUpdater(PHALPlugin):
         latest_version = None
         if self.pypi_ref:
             releases = self._get_pypi_releases()
-        elif self.github_ref:
+        elif self.github_ref and update_alpha:
+            # Get list of latest GH Releases
             releases = self._get_github_releases()
+        elif self.github_ref:
+            # Only need the "latest" GH Release
+            releases = [self._get_latest_github_release()]
         else:
             LOG.error("No remote reference to check for updates")
             releases = []
@@ -119,7 +123,7 @@ class CoreUpdater(PHALPlugin):
         if new_version:
             LOG.info(f"Found newer version: {new_version}")
         if not latest_version and self.github_ref:
-            LOG.info("No release found; get 'latest'")
+            LOG.warning("No release found; get 'latest'")
             latest_version = self._get_latest_github_release()
         LOG.info(f"Got latest version: {latest_version}")
         if message:
