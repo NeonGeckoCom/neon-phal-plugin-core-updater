@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.1a2](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/tree/1.2.1a2) (2023-06-16)
+
+[Full Changelog](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/compare/1.2.1a2...1.2.1a2)
+
+**Merged pull requests:**
+
+- Handle "Latest" and "Pre-release" GitHub tags [\#36](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/pull/36) ([NeonDaniel](https://github.com/NeonDaniel))
+
 ## [1.2.1a2](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/tree/1.2.1a2) (2023-06-15)
 
 [Full Changelog](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/compare/1.2.1a1...1.2.1a2)
