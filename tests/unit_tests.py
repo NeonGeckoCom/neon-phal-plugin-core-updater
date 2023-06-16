@@ -87,7 +87,8 @@ class PluginTests(unittest.TestCase):
         real_get_releases = self.plugin._get_github_releases
         real_get_latest = self.plugin._get_latest_github_release
         # In this example, 22.10.3 is a pre-release
-        gh_releases = ['22.10.3', '22.10.1a1', '22.10.0', '22.04.1a1', '22.04.0']
+        gh_releases = ['22.10.3a1', '22.10.3', '22.10.1a1', '22.10.0',
+                       '22.04.1a1', '22.04.0']
         self.plugin._get_github_releases = Mock(return_value=gh_releases)
         self.plugin._get_latest_github_release = Mock(return_value="22.10.0")
 
@@ -112,8 +113,8 @@ class PluginTests(unittest.TestCase):
             "neon.core_updater.check_update",
             {"include_prerelease": True}))
         self.assertIsInstance(resp, Message)
-        self.assertEqual(resp.data['new_version'], '22.10.1a1')
-        self.assertEqual(resp.data['latest_version'], '22.10.1a1')
+        self.assertEqual(resp.data['new_version'], '22.10.3a1')
+        self.assertEqual(resp.data['latest_version'], '22.10.3a1')
 
         # Update from alpha to newer stable
         self.plugin._installed_version = "22.04.1a1"
@@ -128,8 +129,8 @@ class PluginTests(unittest.TestCase):
             "neon.core_updater.check_update",
             {"include_prerelease": True}))
         self.assertIsInstance(resp, Message)
-        self.assertEqual(resp.data['new_version'], '22.10.1a1')
-        self.assertEqual(resp.data['latest_version'], '22.10.1a1')
+        self.assertEqual(resp.data['new_version'], '22.10.3a1')
+        self.assertEqual(resp.data['latest_version'], '22.10.3a1')
 
         # Update from alpha to older stable
         self.plugin._installed_version = '22.10.1a1'
