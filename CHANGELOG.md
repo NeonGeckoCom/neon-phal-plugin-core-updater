@@ -1,20 +1,32 @@
 # Changelog
 
-## [1.1.2a2](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/tree/1.1.2a2) (2023-06-10)
+## [1.2.1a3](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/tree/1.2.1a3) (2023-06-22)
 
-[Full Changelog](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/compare/1.1.2a1...1.1.2a2)
-
-**Merged pull requests:**
-
-- Prevent 'None' latest version returns [\#31](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/pull/31) ([NeonDaniel](https://github.com/NeonDaniel))
-
-## [1.1.2a1](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/tree/1.1.2a1) (2023-06-07)
-
-[Full Changelog](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/compare/1.1.1...1.1.2a1)
+[Full Changelog](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/compare/1.2.1a2...1.2.1a3)
 
 **Merged pull requests:**
 
-- Update messagebus dependency [\#30](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/pull/30) ([NeonDaniel](https://github.com/NeonDaniel))
+- Handle "Latest" and "Pre-release" GitHub tags [\#36](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/pull/36) ([NeonDaniel](https://github.com/NeonDaniel))
+
+## [1.2.1a2](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/tree/1.2.1a2) (2023-06-15)
+
+[Full Changelog](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/compare/1.2.1a1...1.2.1a2)
+
+**Implemented enhancements:**
+
+- \[FEAT\] Update automation [\#33](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/issues/33)
+
+**Merged pull requests:**
+
+- Update GH Automation to default branch [\#35](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/pull/35) ([NeonDaniel](https://github.com/NeonDaniel))
+
+## [1.2.1a1](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/tree/1.2.1a1) (2023-06-15)
+
+[Full Changelog](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/compare/1.2.0...1.2.1a1)
+
+**Merged pull requests:**
+
+- Update GH Automation and test inherited passed secrets [\#34](https://github.com/NeonGeckoCom/neon-phal-plugin-core-updater/pull/34) ([NeonDaniel](https://github.com/NeonDaniel))
 
 
 
