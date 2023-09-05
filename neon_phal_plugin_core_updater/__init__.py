@@ -49,6 +49,7 @@ class CoreUpdater(PHALPlugin):
         self.pypi_ref = self.config.get("pypi_ref")
         self.patch_script = self.config.get("patch_script")
         self._installed_version = self._get_installed_core_version()
+        self.bus.on("neon.core_updater.get_version", self.get_core_version)
         self.bus.on("neon.core_updater.check_update", self.check_core_updates)
         self.bus.on("neon.core_updater.start_update", self.start_core_updates)
 
@@ -87,6 +88,14 @@ class CoreUpdater(PHALPlugin):
     def _get_pypi_releases(self):
         # TODO: Implement package release checks
         return []
+
+    def get_core_version(self, message: Message):
+        """
+        Get the currently installed core version
+        @param message: `neon.core_updater.get_version` Message
+        """
+        self.bus.emit(message.response({"version": self._installed_version,
+                                        "package": self.core_package}))
 
     def check_core_updates(self, message: Message):
         """
